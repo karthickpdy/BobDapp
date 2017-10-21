@@ -17,14 +17,7 @@ class App extends Component {
       storageValue: 0,
       web3: null,
       customers: [
-        {
-          "customerId": "123123213",
-          "status": false
-        },
-        {
-          "customerId": "2324234",
-          "status": true
-        },
+
       ]
     }
   }
@@ -67,21 +60,24 @@ class App extends Component {
     var customerKycInstance
 
     // Get accounts.
-    // this.state.web3.eth.getAccounts((error, accounts) => {
-    //   customerKyc.deployed().then((instance) => {
-    //     customerKycInstance = instance
+    var that = this;
 
-    //     // Stores a given value, 5 by default.
-    //     return customerKycInstance.verifyAadhar(43672411333, {from: accounts[0]})
-    //   }).then((result) => {
-    //     // Get the value from the contract to prove it worked.
-    //     return customerKycInstance.isAadharVerified.call(436724113)
-    //   }).then((result) => {
-    //     console.log(result)
-    //     // Update state with the result.
-    //     // return this.setState({ storageValue: result.c[0] })
-    //   })
-    // })
+    this.state.web3.eth.getAccounts((error, accounts) => {
+      customerKyc.deployed().then((instance) => {
+        customerKycInstance = instance
+        // Get the value from the contract to prove it worked.
+        return customerKycInstance.getcustomers.call()
+      }).then((result) => {
+        result.map(function (customer_id) {
+           customerKycInstance.getStatus.call(customer_id.toNumber()).then(function(res){
+              let _customers = that.state.customers;
+              _customers.push({"customerId" : customer_id.toNumber(),"status":res})
+              that.setState({customers:_customers})
+           })
+        })
+      })
+    })
+
   }
 
   render() {

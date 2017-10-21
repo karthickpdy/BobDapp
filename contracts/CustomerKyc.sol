@@ -13,6 +13,7 @@ contract CustomerKyc {
     }
 
     mapping (uint => Customer) public customers;
+    uint[] public customer_ids;
 
     function CustomerKyc(uint[] customer_ids){
         for (uint i=0; i<customer_ids.length; i++) {
@@ -22,6 +23,7 @@ contract CustomerKyc {
 
     function addCustomer(uint _id) {        
         customers[_id] = Customer(_id,"",Status.NOT_VERIFIED);
+        customer_ids.push(_id);
         AuditLog("Customer Created",msg.sender,now);    
     }
 
@@ -36,8 +38,25 @@ contract CustomerKyc {
         AuditLog("Aadhar Verified",msg.sender,now);    
     }
     
-    function isAadharVerified(uint _id) returns(bool) {
+    function isAadharVerified(uint _id) constant returns(bool) {
         AuditLog("Aadhar Verification Request raised",msg.sender,now);    
         return customers[_id].status == Status.VERIFIED;
     }    
+    
+    function getcustomers() constant returns(uint[]){
+        return customer_ids;
+    }
+    
+    function getStatus(uint _id) constant returns(string){        
+        if(customers[_id].status == Status.VERIFIED){
+            return "Verified";
+        } else if(customers[_id].status == Status.OTP_SENT) {
+            return "OTP Sent";
+        }  else if(customers[_id].status == Status.NOT_VERIFIED) {
+            return "Not Verified";
+        } else {
+            return "Invalid Status";
+        }                
+    }
+    
 }
