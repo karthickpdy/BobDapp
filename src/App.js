@@ -56,10 +56,10 @@ class App extends Component {
         customerKycInstance = instance
 
         // Stores a given value, 5 by default.
-        return customerKycInstance.addCustomer(1,"srini", {from: accounts[0]})
+        return customerKycInstance.verifyAadhar(43672411333, {from: accounts[0]})
       }).then((result) => {
         // Get the value from the contract to prove it worked.
-        return customerKycInstance.isAadharVerified.call(1)
+        return customerKycInstance.isAadharVerified.call(436724113)
       }).then((result) => {
         console.log(result)
         // Update state with the result.

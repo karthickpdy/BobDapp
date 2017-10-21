@@ -5,18 +5,23 @@ contract CustomerKyc {
     event AuditLog(string content,address indexed doer,uint timestamp);
     
     enum Status { NOT_VERIFIED,OTP_SENT,VERIFIED }
-    
+
     struct Customer {
-        uint id;
-        string name;
+        uint id;        
         string aadharNumber;
         Status status;
     }
 
     mapping (uint => Customer) public customers;
 
-    function addCustomer(uint _id,string _name) {        
-        customers[_id] = Customer(_id,_name,"",Status.NOT_VERIFIED);
+    function CustomerKyc(uint[] customer_ids){
+        for (uint i=0; i<customer_ids.length; i++) {
+            addCustomer(customer_ids[i]);
+        }
+    }
+
+    function addCustomer(uint _id) {        
+        customers[_id] = Customer(_id,"",Status.NOT_VERIFIED);
         AuditLog("Customer Created",msg.sender,now);    
     }
 
