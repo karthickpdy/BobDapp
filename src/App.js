@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import CustomerKyc from '../build/contracts/CustomerKyc.json'
 import getWeb3 from './utils/getWeb3'
+import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table'
+import * as BS from 'react-bootstrap'
 
 import './css/oswald.css'
 import './css/open-sans.css'
-import './css/pure-min.css'
+
 import './App.css'
 
 class App extends Component {
@@ -13,7 +15,17 @@ class App extends Component {
 
     this.state = {
       storageValue: 0,
-      web3: null
+      web3: null,
+      customers: [
+        {
+          "customerId": "123123213",
+          "status": false
+        },
+        {
+          "customerId": "2324234",
+          "status": true
+        },
+      ]
     }
   }
 
@@ -35,6 +47,10 @@ class App extends Component {
     })
   }
 
+  buttonFormatter(cell, row){
+    return <BS.Button bsSize="xsmall">View</BS.Button>;
+  }
+
   instantiateContract() {
     /*
      * SMART CONTRACT EXAMPLE
@@ -51,42 +67,35 @@ class App extends Component {
     var customerKycInstance
 
     // Get accounts.
-    this.state.web3.eth.getAccounts((error, accounts) => {
-      customerKyc.deployed().then((instance) => {
-        customerKycInstance = instance
+    // this.state.web3.eth.getAccounts((error, accounts) => {
+    //   customerKyc.deployed().then((instance) => {
+    //     customerKycInstance = instance
 
-        // Stores a given value, 5 by default.
-        return customerKycInstance.verifyAadhar(43672411333, {from: accounts[0]})
-      }).then((result) => {
-        // Get the value from the contract to prove it worked.
-        return customerKycInstance.isAadharVerified.call(436724113)
-      }).then((result) => {
-        console.log(result)
-        // Update state with the result.
-        // return this.setState({ storageValue: result.c[0] })
-      })
-    })
+    //     // Stores a given value, 5 by default.
+    //     return customerKycInstance.verifyAadhar(43672411333, {from: accounts[0]})
+    //   }).then((result) => {
+    //     // Get the value from the contract to prove it worked.
+    //     return customerKycInstance.isAadharVerified.call(436724113)
+    //   }).then((result) => {
+    //     console.log(result)
+    //     // Update state with the result.
+    //     // return this.setState({ storageValue: result.c[0] })
+    //   })
+    // })
   }
 
   render() {
     return (
-      <div className="App">
-        <nav className="navbar pure-menu pure-menu-horizontal">
-            <a href="#" className="pure-menu-heading pure-menu-link">Truffle Box</a>
-        </nav>
-
-        <main className="container">
-          <div className="pure-g">
-            <div className="pure-u-1-1">
-              <h1>Good to Go!</h1>
-              <p>Your Truffle Box is installed and ready.</p>
-              <h2>Smart Contract Example</h2>
-              <p>If your contracts compiled and migrated successfully, below will show a stored value of 5 (by default).</p>
-              <p>Try changing the value stored on <strong>line 59</strong> of App.js.</p>
-              <p>The stored value is: {this.state.storageValue}</p>
-            </div>
-          </div>
-        </main>
+      <div className="site-container container-fluid flex-container">
+        <BS.Row>
+          <BS.Col xs={12}>
+            <BootstrapTable data={this.state.customers} striped={true} hover={true} condensed= {true} >
+              <TableHeaderColumn dataField="customerId" isKey={true} dataSort={true}>Customer Id</TableHeaderColumn>
+              <TableHeaderColumn dataField="status" dataSort={true}>Aadhar Status</TableHeaderColumn>
+              <TableHeaderColumn dataField="button" dataFormat={this.buttonFormatter.bind(this)}>Actions</TableHeaderColumn>
+            </BootstrapTable>
+          </BS.Col>
+        </BS.Row>
       </div>
     );
   }
