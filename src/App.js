@@ -1,9 +1,13 @@
 import React, { Component } from 'react'
 import CustomerKyc from '../build/contracts/CustomerKyc.json'
 import getWeb3 from './utils/getWeb3'
-import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table'
-import * as BS from 'react-bootstrap'
-
+import {
+  Router,
+  Route
+} from 'react-router-dom';
+import history from './history';
+import * as BS from 'react-bootstrap';
+import * as Components from './components';
 import './css/oswald.css'
 import './css/open-sans.css'
 
@@ -38,10 +42,6 @@ class App extends Component {
     .catch(() => {
       console.log('Error finding web3.')
     })
-  }
-
-  buttonFormatter(cell, row){
-    return <BS.Button bsSize="xsmall">View</BS.Button>;
   }
 
   instantiateContract() {
@@ -82,17 +82,12 @@ class App extends Component {
 
   render() {
     return (
-      <div className="site-container container-fluid flex-container">
-        <BS.Row>
-          <BS.Col xs={12}>
-            <BootstrapTable data={this.state.customers} striped={true} hover={true} condensed= {true} >
-              <TableHeaderColumn dataField="customerId" isKey={true} dataSort={true}>Customer Id</TableHeaderColumn>
-              <TableHeaderColumn dataField="status" dataSort={true}>Aadhar Status</TableHeaderColumn>
-              <TableHeaderColumn dataField="button" dataFormat={this.buttonFormatter.bind(this)}>Actions</TableHeaderColumn>
-            </BootstrapTable>
-          </BS.Col>
-        </BS.Row>
-      </div>
+      <Router history={history}>
+        <div>
+          <Route exact path="/" render={(props) =>(<Components.Home customers={this.state.customers} />)} />
+          <Route path="/about" render={(props) =>(<Components.CustomerDetails />)}/>
+        </div>
+      </Router>
     );
   }
 }
