@@ -1,33 +1,7 @@
-import getWeb3 from './getWeb3'
 import CustomerKyc from '../../build/contracts/CustomerKyc.json'
 const contract = require('truffle-contract')
 const customerKyc = contract(CustomerKyc)
 
-
-
-export const populateCustomers = (web3) => {
-    return new Promise(( resolve, reject ) => { 
-        customerKyc.setProvider(web3.currentProvider)
-        var customerKycInstance 
-        var that = this;
-        web3.eth.getAccounts((error, accounts) => {
-            customerKyc.deployed().then((instance) => {
-                customerKycInstance = instance                
-                return customerKycInstance.getcustomers.call()
-            }).then((result) => {
-                Promise.all(
-                    result.map(function (customer_id) {
-                       return customerKycInstance.getStatus.call(customer_id.toNumber()).then(function(res){
-                            return {"customerId" : customer_id.toNumber(),"status":res} 
-                       })
-                    })
-                ).then(function(res){             
-                    resolve(res)        
-                })
-            })
-        })
-    })
-}
 
 export const getInstance = (web3) => {
     return new Promise(( resolve, reject ) => { 
@@ -37,6 +11,30 @@ export const getInstance = (web3) => {
                 resolve([instance,accounts[0]])
             })
         })
+    })
+}
+
+
+export const populateCustomers = (web3) => {
+    return new Promise(( resolve, reject ) => { 
+        customerKyc.setProvider(web3.currentProvider)
+        var customerKycInstance         
+        
+        getInstance(web3).then(([instance,defaultAccount]) =>{   
+            customerKycInstance = instance                
+            return customerKycInstance.getcustomers.call()
+        }).then((result) => {
+            Promise.all(
+                result.map(function (customer_id) {
+                   return customerKycInstance.getStatus.call(customer_id.toNumber()).then(function(res){
+                        return {"customerId" : customer_id.toNumber(),"status":res} 
+                   })
+                })
+            ).then(function(res){             
+                resolve(res)        
+            })
+        })
+        
     })
 }
 
