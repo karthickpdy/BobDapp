@@ -27,20 +27,11 @@ class App extends Component {
   }
 
   componentWillMount() {
-    // Get network provider and web3 instance.
-    // See utils/getWeb3 for more info.
-    var that = this;
-    getWeb3
-    .then(results => {
+    getWeb3.then(results => {
       this.setState({
         web3: results.web3
-      })
-
-      // Instantiate contract once web3 provided.
-
-      populateCustomers(results.web3,function (res) {                
-        that.setState({customers:res})
-      })
+      })      
+      populateCustomers(results.web3).then((cus) => {this.setState({customers:cus})})
     })
     .catch((e) => {
       console.log(e)
