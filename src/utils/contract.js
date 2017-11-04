@@ -39,7 +39,7 @@ export const populateCustomers = (web3) => {
 }
 
 
-export const verifyAadhar = (customer_id,web3) => {
+export const verifyAadhar = async (customer_id,web3) => {
     return new Promise(( resolve, reject ) => {         
         getInstance(web3).then(([instance,defaultAccount]) =>{                        
             return instance.verifyAadhar(customer_id,{from:defaultAccount})
@@ -49,7 +49,18 @@ export const verifyAadhar = (customer_id,web3) => {
     })
 }
 
-export const isAadharVerified = (customer_id,web3) => {
+
+export const markOTPsent = async (customer_id, web3) => {
+    return new Promise(( resolve, reject ) => {         
+        getInstance(web3).then(([instance,defaultAccount]) =>{                        
+            return instance.markOTPsent(customer_id,{from:defaultAccount})
+        }).then((result) => {        
+            resolve(result)
+        })        
+    })
+}
+
+export const isAadharVerified = async (customer_id,web3) => {
     return new Promise(( resolve, reject ) => {         
         getInstance(web3).then(([instance,defaultAccount]) =>{                        
             return instance.isAadharVerified.call(customer_id)
@@ -59,7 +70,7 @@ export const isAadharVerified = (customer_id,web3) => {
     })
 }
 
-export const getStatus = (customer_id,web3) => {
+export const getStatus = async (customer_id,web3) => {
     return new Promise(( resolve, reject ) => {         
         getInstance(web3).then(([instance,defaultAccount]) =>{                        
             return instance.getStatus.call(customer_id)

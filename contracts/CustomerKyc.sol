@@ -28,12 +28,17 @@ contract CustomerKyc {
     }
 
 
-    function markOTPsent(uint _id){
+    function markOTPsent(uint _id) {
         customers[_id].status = Status.OTP_SENT;
         AuditLog("OTP Sent",msg.sender,now);    
     }
+    
+    function unverifyAadhar(uint _id) {
+        customers[_id].status = Status.NOT_VERIFIED;
+        AuditLog("Aadhar Verified",msg.sender,now);    
+    }
 
-    function verifyAadhar(uint _id){
+    function verifyAadhar(uint _id) {
         customers[_id].status = Status.VERIFIED;
         AuditLog("Aadhar Verified",msg.sender,now);    
     }
@@ -43,19 +48,19 @@ contract CustomerKyc {
         return customers[_id].status == Status.VERIFIED;
     }    
     
-    function getcustomers() constant returns(uint[]){
+    function getcustomers() constant returns(uint[]) {
         return customer_ids;
     }
     
-    function getStatus(uint _id) constant returns(string){        
-        if(customers[_id].status == Status.VERIFIED){
-            return "Verified";
+    function getStatus(uint _id) constant returns(string) {        
+        if(customers[_id].status == Status.VERIFIED) {
+            return "VERIFIED";
         } else if(customers[_id].status == Status.OTP_SENT) {
-            return "OTP Sent";
+            return "OTP_SENT";
         }  else if(customers[_id].status == Status.NOT_VERIFIED) {
-            return "Not Verified";
+            return "NOT_VERIFIED";
         } else {
-            return "Invalid Status";
+            return "INVALID";
         }                
     }
     
