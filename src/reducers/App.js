@@ -1,4 +1,4 @@
-export const AppReducer = (state = {}, action) => {
+export const AppReducer = (state = {customers: [], error: ''}, action) => {
   switch(action.type) {
     case 'LOAD_CUSTOMERS':
       return {...state, customers: action.customers}
@@ -8,6 +8,8 @@ export const AppReducer = (state = {}, action) => {
       const customerToBeUpdated = state.customers.filter(customer => customer.customerId === action.customerId)[0]
       customerToBeUpdated.status = action.status;
       return {customers: state.customers.filter(customer => customer.customerId !== action.customerId).concat([customerToBeUpdated])}
+    case 'ERROR':
+      return {...state, error: action.error}
     default:
       return state;
   }

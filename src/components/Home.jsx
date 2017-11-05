@@ -5,9 +5,6 @@ import {withRouter} from 'react-router';
 
 class Home extends Component {
   
-  componentDidMount() {
-  }
-
   buttonFormatter(cell, row){
     console.log(this.props)
     return <BS.Button bsSize="xsmall" onClick={() => this.props.fetchCustomer(row.customerId)}>View</BS.Button>;

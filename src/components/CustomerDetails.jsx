@@ -3,27 +3,22 @@ import { withRouter } from 'react-router';
 import * as BS from 'react-bootstrap';
 
 class CustomerDetails extends Component {
-
-    updateStatus() {
-        // getStatus(this.props.location.state.customer.customerId,this.state.web3).then((result) => {
-        //     this.setState({customer_status: result})
-        // })
+    
+    constructor(props){
+        super(props)
+        this.state = {
+            otp: ''
+        }
     }
 
-    componentWillMount() {
-        // getWeb3.then(results => {
-        //     this.setState({
-        //         web3: results.web3
-        //     })      
-        //     this.updateStatus()
-        // })
-        // .catch((e) => {
-        //   console.log(e)
-        // })
+    handleOTPChange(e) {
+        this.setState({
+            otp: e.target.value
+        })
     }
 
     verifyAadhar() {
-        this.props.verifyAadhar(this.props.location.state.kycRecord.customerId, this.props.location.state.bankRecord.Aadhar_card, '234234');
+        this.props.verifyAadhar(this.props.location.state.kycRecord.customerId, this.props.location.state.bankRecord.Aadhar_card, this.state.otp);
     }
 
     sendOTP() {
@@ -90,7 +85,9 @@ class CustomerDetails extends Component {
                                         <BS.FormControl
                                             type="text"
                                             placeholder=""
+                                            value={this.state.otp}
                                             name="otp"
+                                            onChange={this.handleOTPChange.bind(this)}
                                         />
                                         <BS.FormControl.Feedback />
                                     </BS.FormGroup>

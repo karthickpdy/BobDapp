@@ -13,8 +13,6 @@ class Search extends Component {
       }
     }
   }
-  componentDidMount() {
-  }
 
   buttonFormatter(cell, row) {
     console.log(this.props)
@@ -24,9 +22,11 @@ class Search extends Component {
   getValidationState() {
     return null;
   }
+
   handleSubmit() {
     this.props.handleSubmit(this.state.search.customerId);
   }
+  
   handleChange(e) {
     this.setState({search: {
       customerId: e.target.value 
