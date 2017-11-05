@@ -10,7 +10,7 @@ class Home extends Component {
 
   buttonFormatter(cell, row){
     console.log(this.props)
-    return <BS.Button bsSize="xsmall" onClick={() => this.props.history.push({pathname: '/about', state: {customer: row} })}>View</BS.Button>;
+    return <BS.Button bsSize="xsmall" onClick={() => this.props.fetchCustomer(row.customerId)}>View</BS.Button>;
   }
 
   render() {
