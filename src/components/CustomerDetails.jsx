@@ -3,9 +3,6 @@ import { withRouter } from 'react-router';
 import * as BS from 'react-bootstrap';
 
 class CustomerDetails extends Component {
-    constructor(props) {
-        super(props)
-    }
 
     updateStatus() {
         // getStatus(this.props.location.state.customer.customerId,this.state.web3).then((result) => {
@@ -101,6 +98,7 @@ class CustomerDetails extends Component {
                                 </BS.Form>
                             </div>}
                             {customer.status.toUpperCase() === 'NOT_VERIFIED' && <BS.Button bsStyle="primary" onClick={this.sendOTP.bind(this)}>Send OTP</BS.Button>}
+                            {customer.status.toUpperCase() === 'VERIFIED' && <BS.Button bsStyle="success"><BS.Glyphicon glyph="ok" /> VERIFIED</BS.Button>}
                         </BS.Panel>
                     </BS.PanelGroup>
                 </BS.Col>

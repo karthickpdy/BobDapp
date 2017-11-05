@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import * as BS from 'react-bootstrap';
 import { withRouter } from 'react-router';
 

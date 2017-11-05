@@ -79,3 +79,20 @@ export const getStatus = async (customer_id,web3) => {
         })        
     })
 }
+
+export const addCustomer = async (customer_id,web3) => {
+    return new Promise(( resolve, reject ) => {         
+        try {
+            getInstance(web3).then(([instance,defaultAccount]) =>{                        
+                return instance.addCustomer(customer_id, {from:defaultAccount})
+            }).then((result) => {        
+                resolve(result)
+            }).catch( err => {
+                console.log('ex', err);
+                reject(err)
+            })    
+        } catch (error) {
+            reject(error)    
+        }
+    })
+}

@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import * as BS from 'react-bootstrap';
-import { withRouter } from 'react-router';
 
-
-class Nav extends Component {
+export class Nav extends Component {
 
   render() {
     return (<BS.Navbar bsStyle="pills">
@@ -18,8 +16,3 @@ class Nav extends Component {
     </BS.Navbar>)
   }
 }
-
-// const withRouterNav = withRouter(Nav)
-export {
-  Nav as Nav
-}   

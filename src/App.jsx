@@ -1,20 +1,18 @@
-import React, { Component } from 'react'
-import getWeb3 from './utils/getWeb3'
-import { populateCustomers } from './utils/contract'
+import React, { Component } from 'react';
+import getWeb3 from './utils/getWeb3';
 import {
   Router,
   Route
 } from 'react-router-dom';
 import history from './history';
-import * as BS from 'react-bootstrap';
 import * as Components from './components';
-import './css/oswald.css'
-import './css/open-sans.css'
-import { AppReducer } from './reducers/App'
-import * as API from './apis/api'
-import { verifyAadhar, markOTPsent, unverifyAadhar, getStatus } from './utils/contract'
+import './css/oswald.css';
+import './css/open-sans.css';
+import { AppReducer } from './reducers/App';
+import * as API from './apis/api';
+import { populateCustomers, addCustomer, verifyAadhar, markOTPsent, getStatus } from './utils/contract';
 
-import './App.css'
+import './App.css';
 
 class App extends Component {
   constructor(props) {
@@ -30,6 +28,9 @@ class App extends Component {
   }
 
   dispatch(action) {
+    console.log('action triggered');
+    console.log('action', action);
+    console.log('prevState', this.state);
     this.setState(prevState => AppReducer(prevState, action));
   }
 
@@ -52,16 +53,42 @@ class App extends Component {
   }
 
   updateStatus = async (customerId, aadharNumber) => {
-    const result = await getStatus(customerId, this.state.web3)
-    console.log('web3 result', result);
-    this.dispatch({ type: 'UPDATE_CUSTOMER', status: result, customerId, aadharNumber });
+    let obsoleteCustomer = this.state.customers.filter(customer => customer.customerId === customerId)[0];
+    let newStatus = ''
+    do {
+      newStatus = await getStatus(customerId, this.state.web3)
+      console.log('web3 newStatus', newStatus);
+    } while (obsoleteCustomer.status.toUpperCase() === newStatus)
+    this.dispatch({ type: 'UPDATE_CUSTOMER', status: newStatus, customerId, aadharNumber });
+  }
+
+  createKycCustomer = async (customerId) => {
+    try {
+      return await addCustomer(customerId, this.state.web3);
+    } catch (error) {
+      return error;
+    }
   }
 
   handleSearch = async (customerId) => {
     const response = await API.getCustomer(customerId);
-    console.log('reponse', response);
-    history.push({ pathname: '/about', state: { bankRecord: response.response, kycRecord: this.state.customers.filter(customer => customer.customerId === parseInt(customerId))[0] } })
+    if (response.status !== 'success') {
+      console.log('error', response);
+      return {error: 'customer not found'}
+    }
+    const kycCustomers = this.state.customers.filter(customer => customer.customerId === parseInt(customerId));
+    let kycCustomer = kycCustomers[0];
+    if (!kycCustomer) {
+      const web3response = await this.createKycCustomer(parseInt(customerId));
+      if (web3response.tx) {
+        const status = await getStatus(customerId, this.state.web3)
+        kycCustomer = { customerId, status }
+      }
+    }
+    history.push({ pathname: '/about', state: { bankRecord: response.response, kycRecord: kycCustomer } })
   }
+
+
 
   componentWillMount() {
     getWeb3.then(results => {
