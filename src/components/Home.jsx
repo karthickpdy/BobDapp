@@ -15,7 +15,7 @@ class Home extends Component {
 
   render() {
     console.log(this.props);
-    return (<div className="site-container container-fluid flex-container">
+    return (
               <BS.Row>
                 <BS.Col xs={12}>
                   <BootstrapTable data={this.props.customers} striped={true} hover={true} condensed={true} >
@@ -24,8 +24,7 @@ class Home extends Component {
                     <TableHeaderColumn dataField="button" dataFormat={this.buttonFormatter.bind(this)}>Actions</TableHeaderColumn>
                   </BootstrapTable>
                 </BS.Col>
-              </BS.Row>
-          </div>);   
+              </BS.Row>);   
   }
 }
 

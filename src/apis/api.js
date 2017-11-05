@@ -32,3 +32,21 @@ export const verifyOTP = (customerId, aadharNumber, OTP) => {
     return JSON.parse(e)
   })
 }
+
+
+export const getCustomer = (customerId) => {
+  return fetch(`http://127.0.0.1:8082/api/bob/customer-details`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({'Customer_Id': customerId})
+  }).then(response => {
+    return response.json()
+  }).then(response => {
+    return response;
+  }).catch(e => {
+    return JSON.parse(e)
+  })
+}

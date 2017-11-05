@@ -57,6 +57,11 @@ class App extends Component {
     this.dispatch({type: 'UPDATE_CUSTOMER', status: result, customerId, aadharNumber});
   }
 
+  handleSearch = async (customerId) => {
+    const response = await API.getCustomer(customerId);
+    console.log('reponse', response);
+  }
+
   componentWillMount() {
     getWeb3.then(results => {
       this.setState({
@@ -75,6 +80,7 @@ class App extends Component {
         <div>
           <Route exact path="/" render={(props) =>(<Components.Home customers={this.state.customers} />)} />
           <Route path="/about" render={(props) =>(<Components.CustomerDetails sendOTP={this.sendOTP.bind(this)} verifyAadhar={this.verifyAadhar.bind(this)} />)}/>
+          <Route path="/search" render={(props) =>(<Components.Search handleSubmit={this.handleSearch.bind(this)} />)}/>
         </div>
       </Router>
     );
