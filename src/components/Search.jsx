@@ -41,7 +41,7 @@ class Search extends Component {
           controlId="formBasicText"
           validationState={this.getValidationState()}
         >
-          <BS.ControlLabel>Working example with validation</BS.ControlLabel>
+          <BS.ControlLabel>Search Customer</BS.ControlLabel>
           <BS.FormControl
             type="text"
             value={this.state.search.customerId}
