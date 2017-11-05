@@ -82,7 +82,8 @@ class App extends Component {
       const web3response = await this.createKycCustomer(parseInt(customerId));
       if (web3response.tx) {
         const status = await getStatus(customerId, this.state.web3)
-        kycCustomer = { customerId, status }
+        kycCustomer = { customerId: parseInt(customerId), status }
+        this.dispatch({type: 'ADD_CUSTOMER', customer: kycCustomer})
       }
     }
     history.push({ pathname: '/about', state: { bankRecord: response.response, kycRecord: kycCustomer } })
