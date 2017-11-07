@@ -2,9 +2,10 @@ pragma solidity ^0.4.2;
 
 contract CustomerKyc {
     
-    event AuditLog(string content,address indexed doer,uint timestamp);
+    event AuditLog(string content,address indexed doer,uint indexed customer_id,uint timestamp);
     
     enum Status { NOT_VERIFIED,OTP_SENT,VERIFIED }
+    enum ExternalRequestStatus { PENDING,APPROVED }
 
     struct Customer {
         uint id;        
@@ -12,39 +13,47 @@ contract CustomerKyc {
         Status status;
     }
 
+    struct ExternalRequest {
+        string aadharNumber;
+        string requestor;
+        ExternalRequestStatus status;
+    }
+    
     mapping (uint => Customer) public customers;
+    mapping (string => Customer)  aadhar_mapping;
+    
+    mapping (uint => ExternalRequest) public external_requests;
+    
+    
+    
     uint[] public customer_ids;
 
-    function CustomerKyc(uint[] customer_ids){
-        for (uint i=0; i<customer_ids.length; i++) {
-            addCustomer(customer_ids[i]);
-        }
-    }
 
-    function addCustomer(uint _id) {        
-        customers[_id] = Customer(_id,"",Status.NOT_VERIFIED);
+    function addCustomer(uint _id,string _aadharNumber) {        
+        customers[_id] = Customer(_id,_aadharNumber,Status.NOT_VERIFIED);
+        aadhar_mapping[_aadharNumber] = customers[_id];
         customer_ids.push(_id);
-        AuditLog("Customer Created",msg.sender,now);    
+        AuditLog("Customer Created",msg.sender,_id,now);    
     }
 
 
     function markOTPsent(uint _id) {
         customers[_id].status = Status.OTP_SENT;
-        AuditLog("OTP Sent",msg.sender,now);    
+        AuditLog("OTP Sent",msg.sender,_id,now);    
     }
     
     function unverifyAadhar(uint _id) {
         customers[_id].status = Status.NOT_VERIFIED;
-        AuditLog("Aadhar Verified",msg.sender,now);    
+        AuditLog("Aadhar Verified",msg.sender,_id,now);    
     }
 
     function verifyAadhar(uint _id) {
         customers[_id].status = Status.VERIFIED;
-        AuditLog("Aadhar Verified",msg.sender,now);    
+        AuditLog("Aadhar Verified",msg.sender,_id,now);    
     }
     
     function isAadharVerified(uint _id) constant returns(bool) {
-        AuditLog("Aadhar Verification Request raised",msg.sender,now);    
+        AuditLog("Aadhar Verification Request raised",msg.sender,_id,now);    
         return customers[_id].status == Status.VERIFIED;
     }    
     
@@ -64,4 +73,27 @@ contract CustomerKyc {
         }                
     }
     
+    
+    function createExternalRequest(string aadharNumber,string requestor) returns(string){
+        ExternalRequest memory e = ExternalRequest(aadharNumber,requestor,ExternalRequestStatus.PENDING);
+        if(aadhar_mapping[aadharNumber].id != 0){
+            external_requests[aadhar_mapping[aadharNumber].id] = e;
+            return "Request is being processed";
+        }
+        else
+            return "Aadhar Not Present";
+            
+        
+    }
+    
+        
+    function getRequestStatus(string aadharNumber) constant returns(string) {        
+        Customer memory c = aadhar_mapping[aadharNumber];
+        ExternalRequest memory  e = external_requests[c.id];
+        if(e.status == ExternalRequestStatus.PENDING) {
+            return "Request Pending";
+        } else {
+            return getStatus(c.id);
+        }
+    }
 }
