@@ -24,6 +24,7 @@ export const populateCustomers = (web3) => {
             customerKycInstance = instance                
             return customerKycInstance.getcustomers.call()
         }).then((result) => {
+            console.log("populateCustomers call",result)
             Promise.all(
                 result.map(function (customer_id) {
                    return customerKycInstance.getStatus.call(customer_id.toNumber()).then(function(res){
@@ -94,5 +95,17 @@ export const addCustomer = async (customer_id,web3) => {
         } catch (error) {
             reject(error)    
         }
+    })
+}
+
+
+export const getEventLogs = async (customer_id,web3) => {
+    return new Promise(( resolve, reject ) => {         
+        getInstance(web3).then(([instance,defaultAccount]) =>{                        
+            instance.AuditLog({customer_id:customer_id},{fromBlock: 0, toBlock: 'latest'}).get(function(err,res) {
+               console.log("Logger",res);         
+               resolve(res)
+            });   
+        })        
     })
 }

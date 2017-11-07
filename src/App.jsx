@@ -11,14 +11,13 @@ import './css/oswald.css';
 import './css/open-sans.css';
 import { AppReducer } from './reducers/App';
 import * as API from './apis/api';
-import { populateCustomers, addCustomer, verifyAadhar, markOTPsent, getStatus } from './utils/contract';
+import { getEventLogs,populateCustomers, addCustomer, verifyAadhar, markOTPsent, getStatus } from './utils/contract';
 
 import './App.css';
 
 class App extends Component {
   constructor(props) {
     super(props)
-
     this.state = {
       storageValue: 0,
       web3: null,
@@ -35,7 +34,7 @@ class App extends Component {
     this.setState(prevState => AppReducer(prevState, action));
   }
 
-  sendOTP = async (customerId, aadharNumber) => {
+  sendOTP = async (customerId, aadharNumber) => {    
     const response = await API.initiateAadharVerification(customerId, aadharNumber);
     if (response.status === 'otp_sent') {
       const web3Response = await markOTPsent(customerId, this.state.web3);
@@ -103,6 +102,7 @@ class App extends Component {
         web3: results.web3
       })
       populateCustomers(results.web3).then((cus) => { this.setState({ customers: cus }) })
+      
     })
       .catch((e) => {
         console.log(e)
@@ -113,6 +113,11 @@ class App extends Component {
     this.setState({
       error: ''
     })
+  }
+
+  getLog(customer_id,web3) {
+    console.log(web3)
+    return getEventLogs(customer_id,web3)
   }
   render() {
     return (
@@ -130,7 +135,7 @@ class App extends Component {
         <Router history={history}>
           <div className="site-container container-fluid flex-container">
             <Route exact path="/" render={(props) => (<Components.Home fetchCustomer={this.handleSearch.bind(this)} customers={this.state.customers} />)} />
-            <Route path="/about" render={(props) => (<Components.CustomerDetails sendOTP={this.sendOTP.bind(this)} verifyAadhar={this.verifyAadhar.bind(this)} />)} />
+            <Route path="/about" render={(props) => (<Components.CustomerDetails sendOTP={this.sendOTP.bind(this)} verifyAadhar={this.verifyAadhar.bind(this)} getLog={this.getLog.bind(this)}  web3={this.state.web3} />)} />
             <Route path="/search" render={(props) => (<Components.Search handleSubmit={this.handleSearch.bind(this)} />)} />
           </div>
         </Router>
