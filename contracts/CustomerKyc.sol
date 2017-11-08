@@ -14,6 +14,7 @@ contract CustomerKyc {
     }
 
     struct ExternalRequest {
+        uint customer_id;
         string aadharNumber;
         string requestor;
         ExternalRequestStatus status;
@@ -75,9 +76,11 @@ contract CustomerKyc {
     
     
     function createExternalRequest(string aadharNumber,string requestor) returns(string){
-        ExternalRequest memory e = ExternalRequest(aadharNumber,requestor,ExternalRequestStatus.PENDING);
-        if(aadhar_mapping[aadharNumber].id != 0){
-            external_requests[aadhar_mapping[aadharNumber].id] = e;
+        Customer memory c = aadhar_mapping[aadharNumber];
+        if(c.id != 0){
+            ExternalRequest memory e = ExternalRequest(c.id,aadharNumber,requestor,ExternalRequestStatus.PENDING);
+            external_requests[c.id] = e;
+            AuditLog("External Bank Request Raised",msg.sender,c.id,now);    
             return "Request is being processed";
         }
         else
@@ -95,5 +98,16 @@ contract CustomerKyc {
         } else {
             return getStatus(c.id);
         }
+    }
+
+
+    function isRequestPending(uint _id) constant returns (bool) {
+        ExternalRequest memory  e = external_requests[_id];
+        return e.customer_id != 0 && e.status == ExternalRequestStatus.PENDING;
+    }
+
+    function approveExternalRequest(uint _id){
+        external_requests[_id].status = ExternalRequestStatus.APPROVED;
+        AuditLog("External Bank Request Approved",msg.sender,_id,now);    
     }
 }

@@ -13,14 +13,6 @@ class CustomerDetails extends Component {
 
     }
 
-
-    componentWillMount(){
-        console.log(this.props.web3)
-        this.props.getLog(this.props.location.state.kycRecord.customerId,this.props.web3).then((res) => {
-            this.setState({auditLog:res})
-            console.log("Passed Logger",res)
-        })        
-    }
     handleOTPChange(e) {
         this.setState({
             otp: e.target.value
@@ -109,7 +101,7 @@ class CustomerDetails extends Component {
                             {customer.status.toUpperCase() === 'VERIFIED' && <BS.Button bsStyle="success"><BS.Glyphicon glyph="ok" /> VERIFIED</BS.Button>}
                         </BS.Panel>
                         {                        
-                        this.state.auditLog.length > 0 ?
+                        this.props.location.state.auditLogs.length > 0 ?
                         <BS.Panel bsStyle={'info'} header={'Transaction History'}>
                             <BS.Table responsive>
                                 <thead>
@@ -120,7 +112,7 @@ class CustomerDetails extends Component {
                                 </thead>
                                 <tbody>
                                     {                                
-                                        this.state.auditLog.map(function(log,i) {
+                                        this.props.location.state.auditLogs.map(function(log,i) {
                                             return  <tr key={i}>
                                                         <td>{log.args.content}</td>
                                                         <td>{new Date(log.args.timestamp.toNumber()*1000).toString()}</td>

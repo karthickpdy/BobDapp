@@ -28,7 +28,9 @@ export const populateCustomers = (web3) => {
             Promise.all(
                 result.map(function (customer_id) {
                    return customerKycInstance.getStatus.call(customer_id.toNumber()).then(function(res){
-                        return {"customerId" : customer_id.toNumber(),"status":res} 
+                        return customerKycInstance.isRequestPending.call(customer_id.toNumber()).then(function(pending_status){
+                            return {"customerId" : customer_id.toNumber(),"status":res,"pending_status":pending_status} 
+                        })
                    })
                 })
             ).then(function(res){             
@@ -106,6 +108,37 @@ export const getEventLogs = async (customer_id,web3) => {
                console.log("Logger",res);         
                resolve(res)
             });   
+        })        
+    })
+}
+
+export const approveExternalRequest = async (customer_id,web3) => {
+    return new Promise(( resolve, reject ) => {         
+        getInstance(web3).then(([instance,defaultAccount]) =>{                        
+            return instance.approveExternalRequest(customer_id,{from:defaultAccount})
+        }).then((result) => {        
+            resolve(result)
+        })        
+    })
+}
+
+export const createExternalRequest = async (aadharNumber,web3) => {
+    return new Promise(( resolve, reject ) => {         
+        getInstance(web3).then(([instance,defaultAccount]) =>{                        
+            return instance.createExternalRequest(aadharNumber,"IOB",{from:defaultAccount,gas:2000000})
+        }).then((result) => {        
+            resolve(result)
+        })        
+    })
+}
+
+
+export const getExternalRequestStatus = async (aadharNumber,web3) => {
+    return new Promise(( resolve, reject ) => {         
+        getInstance(web3).then(([instance,defaultAccount]) =>{                        
+            return instance.getRequestStatus.call(aadharNumber)
+        }).then((result) => {        
+            resolve(result)
         })        
     })
 }

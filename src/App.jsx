@@ -11,7 +11,7 @@ import './css/oswald.css';
 import './css/open-sans.css';
 import { AppReducer } from './reducers/App';
 import * as API from './apis/api';
-import { getEventLogs,populateCustomers, addCustomer, verifyAadhar, markOTPsent, getStatus } from './utils/contract';
+import { getExternalRequestStatus,createExternalRequest,approveExternalRequest,getEventLogs,populateCustomers, addCustomer, verifyAadhar, markOTPsent, getStatus } from './utils/contract';
 
 import './App.css';
 
@@ -23,7 +23,8 @@ class App extends Component {
       web3: null,
       customers: [
 
-      ]
+      ],
+      external_requests: []      
     }
   }
 
@@ -42,6 +43,7 @@ class App extends Component {
       await this.updateStatus(customerId, aadharNumber);
     }
   }
+
 
   verifyAadhar = async (customerId, aadharNumber, OTP) => {
     const response = await API.verifyOTP(customerId, aadharNumber, OTP);
@@ -91,7 +93,8 @@ class App extends Component {
         return this.dispatch({ type: 'ERROR', error: 'Error in adding Customer to KYC' });
       }
     }
-    history.push({ pathname: '/about', state: { bankRecord: response.response, kycRecord: kycCustomer } })
+    var logs = await getEventLogs(customerId,this.state.web3)
+    history.push({ pathname: '/about', state: { bankRecord: response.response, kycRecord: kycCustomer,auditLogs: logs } })
   }
 
 
@@ -101,8 +104,7 @@ class App extends Component {
       this.setState({
         web3: results.web3
       })
-      populateCustomers(results.web3).then((cus) => { this.setState({ customers: cus }) })
-      
+      populateCustomers(results.web3).then((cus) => { this.setState({ customers: cus }) })      
     })
       .catch((e) => {
         console.log(e)
@@ -115,10 +117,32 @@ class App extends Component {
     })
   }
 
-  getLog(customer_id,web3) {
-    console.log(web3)
-    return getEventLogs(customer_id,web3)
+  sendExternalRequest = async (aadharNumber) => {
+    var res = await createExternalRequest(aadharNumber,this.state.web3)
+    var status = await getExternalRequestStatus(aadharNumber,this.state.web3)
+    this.dispatch({"type":"ADD_EXTERNAL_REQUEST"})
   }
+
+  approveExternalRequest = async (customerId) => {        
+    const web3Response = await approveExternalRequest(customerId, this.state.web3);    
+    var status = await getExternalRequestStatus('1',this.state.web3)
+    // console.log('web3 response', web3Response);    
+    // this.dispatch({"type":"UPDATE_EXTERNAL_REQUEST",external_request: {'aadharNumber':1,'status':status}})
+  }
+
+  updateExternalRequestStatus = async () => {
+    if(localstorage.getItem("ExternalRequest")){
+      var external_requests = localstorage.getItem("ExternalRequest")
+      for (var i = 0; i < external_requests.length; i++) {
+        var status = await getExternalRequestStatus('1',this.state.web3)
+        external_requests[i] = {}
+      }
+    }
+  }
+
+
+
+
   render() {
     return (
       <div>
@@ -134,8 +158,9 @@ class App extends Component {
         }
         <Router history={history}>
           <div className="site-container container-fluid flex-container">
-            <Route exact path="/" render={(props) => (<Components.Home fetchCustomer={this.handleSearch.bind(this)} customers={this.state.customers} />)} />
-            <Route path="/about" render={(props) => (<Components.CustomerDetails sendOTP={this.sendOTP.bind(this)} verifyAadhar={this.verifyAadhar.bind(this)} getLog={this.getLog.bind(this)}  web3={this.state.web3} />)} />
+            <Route path="/about" render={(props) => (<Components.CustomerDetails sendOTP={this.sendOTP.bind(this)} verifyAadhar={this.verifyAadhar.bind(this)} />)} />
+            <Route exact path="/" render={(props) => (<Components.Home fetchCustomer={this.handleSearch.bind(this)} customers={this.state.customers} approveExternalRequest={this.approveExternalRequest.bind(this)} />)} />
+            <Route path="/external" render={(props) => (<Components.ExternalRequest handleSubmit={this.sendExternalRequest.bind(this)} externalRequests={this.state.external_requests} />)} />
             <Route path="/search" render={(props) => (<Components.Search handleSubmit={this.handleSearch.bind(this)} />)} />
           </div>
         </Router>

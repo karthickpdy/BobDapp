@@ -7,7 +7,10 @@ class Home extends Component {
   
   buttonFormatter(cell, row){
     console.log(this.props)
-    return <BS.Button bsSize="xsmall" onClick={() => this.props.fetchCustomer(row.customerId)}>View</BS.Button>;
+    return <div>
+              <BS.Button bsSize="xsmall" onClick={() => this.props.fetchCustomer(row.customerId)}>View</BS.Button>
+              {row.pending_status ? <BS.Button bsSize="xsmall" onClick={() => this.props.approveExternalRequest(row.customerId)}>Approve Request</BS.Button> : null }
+            </div>
   }
 
   render() {
