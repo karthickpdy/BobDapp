@@ -101,7 +101,7 @@ class CustomerDetails extends Component {
                             {customer.status.toUpperCase() === 'VERIFIED' && <BS.Button bsStyle="success"><BS.Glyphicon glyph="ok" /> VERIFIED</BS.Button>}
                         </BS.Panel>
                         {                        
-                        this.props.location.state.auditLogs.length > 0 ?
+                        this.props.logs.length > 0 ?
                         <BS.Panel bsStyle={'info'} header={'Transaction History'}>
                             <BS.Table responsive>
                                 <thead>
@@ -112,7 +112,7 @@ class CustomerDetails extends Component {
                                 </thead>
                                 <tbody>
                                     {                                
-                                        this.props.location.state.auditLogs.map(function(log,i) {
+                                        this.props.logs.map(function(log,i) {
                                             return  <tr key={i}>
                                                         <td>{log.args.content}</td>
                                                         <td>{new Date(log.args.timestamp.toNumber()*1000).toString()}</td>

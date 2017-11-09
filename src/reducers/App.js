@@ -14,6 +14,8 @@ export const AppReducer = (state = {customers: [], error: ''}, action) => {
       const externalRequestToUpdate = state.external_requests.filter(request => request.aadharNumber === action.aadharNumber)[0]
       externalRequestToUpdate.status = action.external_request.status;
       return {external_requests: state.external_requests.filter(request => request.aadharNumber !== action.aadharNumber).concat([externalRequestToUpdate])}
+    case 'RELOAD_LOGS':
+      return {...state,logs:action.logs}
     case 'ERROR':
       return {...state, error: action.error}
     default:
