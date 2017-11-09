@@ -131,6 +131,7 @@ class App extends Component {
   }
 
   updateExternalRequestStatus = async () => {
+    const localstorage = window.localStorage;
     if(localstorage.getItem("ExternalRequest")){
       var external_requests = localstorage.getItem("ExternalRequest")
       for (var i = 0; i < external_requests.length; i++) {
