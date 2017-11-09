@@ -26,7 +26,7 @@ class App extends Component {
       ],
       logs: null,
       external_requests: []      
-    }
+    }    
   }
 
   dispatch(action) {
@@ -112,6 +112,7 @@ class App extends Component {
         web3: results.web3
       })
       populateCustomers(results.web3).then((cus) => { this.setState({ customers: cus }) })      
+      this.updateExternalRequestStatus()
     })
       .catch((e) => {
         console.log(e)
@@ -126,25 +127,32 @@ class App extends Component {
 
   sendExternalRequest = async (aadharNumber) => {
     var res = await createExternalRequest(aadharNumber,this.state.web3)
-    var status = await getExternalRequestStatus(aadharNumber,this.state.web3)
-    this.dispatch({"type":"ADD_EXTERNAL_REQUEST"})
+    if(localStorage.getItem('aadharNumberRequests')){
+      var requests = JSON.parse(localStorage.getItem('aadharNumberRequests'))
+      requests.push(aadharNumber)
+      localStorage.setItem('aadharNumberRequests',JSON.stringify(requests))
+    } else {
+      localStorage.setItem('aadharNumberRequests',JSON.stringify([aadharNumber]))
+    }
+
+    this.updateExternalRequestStatus()    
   }
 
   approveExternalRequest = async (customerId) => {        
     const web3Response = await approveExternalRequest(customerId, this.state.web3);    
-    var status = await getExternalRequestStatus('1',this.state.web3)
-    // console.log('web3 response', web3Response);    
-    // this.dispatch({"type":"UPDATE_EXTERNAL_REQUEST",external_request: {'aadharNumber':1,'status':status}})
+    this.updateExternalRequestStatus()
   }
 
-  updateExternalRequestStatus = async () => {
-    const localstorage = window.localStorage;
-    if(localstorage.getItem("ExternalRequest")){
-      var external_requests = localstorage.getItem("ExternalRequest")
-      for (var i = 0; i < external_requests.length; i++) {
-        var status = await getExternalRequestStatus('1',this.state.web3)
-        external_requests[i] = {}
+  updateExternalRequestStatus = async () => {    
+    if(localStorage.getItem('aadharNumberRequests')){
+      var aadharNumberRequests = JSON.parse(localStorage.getItem('aadharNumberRequests'))
+      var results = []
+      
+      for (var i = 0; i < aadharNumberRequests.length; i++) {
+        var status = await getExternalRequestStatus(aadharNumberRequests[i],this.state.web3)
+        results.push({aadharNumber:aadharNumberRequests[i],status:status})
       }
+      this.dispatch({type: 'UPDATE_EXTERNAL_REQUEST',results})
     }
   }
 

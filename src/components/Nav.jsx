@@ -12,6 +12,7 @@ export class Nav extends Component {
       </BS.Navbar.Header>
       <BS.Nav>
         <BS.NavItem eventKey={1} href="/search">Search</BS.NavItem>
+        <BS.NavItem eventKey={2} href="/external" target="_blank">Go to External app</BS.NavItem>
       </BS.Nav>
     </BS.Navbar>)
   }

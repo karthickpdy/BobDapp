@@ -8,12 +8,8 @@ export const AppReducer = (state = {customers: [], error: ''}, action) => {
       const customerToBeUpdated = state.customers.filter(customer => customer.customerId === action.customerId)[0]
       customerToBeUpdated.status = action.status;
       return {customers: state.customers.filter(customer => customer.customerId !== action.customerId).concat([customerToBeUpdated])}
-    case 'ADD_EXTERNAL_REQUEST':
-      return {...state, external_requests: state.external_requests.concat([action.external_request])}
     case 'UPDATE_EXTERNAL_REQUEST':
-      const externalRequestToUpdate = state.external_requests.filter(request => request.aadharNumber === action.aadharNumber)[0]
-      externalRequestToUpdate.status = action.external_request.status;
-      return {external_requests: state.external_requests.filter(request => request.aadharNumber !== action.aadharNumber).concat([externalRequestToUpdate])}
+      return {...state,external_requests: action.results}
     case 'RELOAD_LOGS':
       return {...state,logs:action.logs}
     case 'ERROR':
