@@ -1,8 +1,8 @@
 var CustomerKyc = artifacts.require("./CustomerKyc.sol");
 
 module.exports = function(deployer) {
-	var customer_ids = [435723112,436724113,437725114,438726115]
-	var aadharNumbers = ["1","2","3","4"]
+	var customer_ids = [435723112,437725114, 476764153, 483771160, 487775164]
+	var aadharNumbers = ["124536987225","64536987225", "114536987225", "24536987225", "84536987225"]
   	
   	deployer.deploy(CustomerKyc);
   
