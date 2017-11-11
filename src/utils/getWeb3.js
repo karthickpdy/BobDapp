@@ -1,4 +1,5 @@
 import Web3 from 'web3'
+import * as constants from './constants'
 
 let getWeb3 = new Promise(function(resolve, reject) {
   // Wait for loading completion to avoid race conditions with web3 injection timing.
@@ -20,7 +21,7 @@ let getWeb3 = new Promise(function(resolve, reject) {
       resolve(results)
     } else {
       // Fallback to localhost if no web3 injection.
-      var provider = new Web3.providers.HttpProvider('http://localhost:8545')
+      var provider = new Web3.providers.HttpProvider(constants.ETHEREUM_RPC_URL)
 
       web3 = new Web3(provider)
 

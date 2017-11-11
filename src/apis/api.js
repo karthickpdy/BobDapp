@@ -1,5 +1,7 @@
+import * as constants from '../utils/constants'
+
 export const initiateAadharVerification = (customerId, aadharNumber) => {
-  return fetch(`http://127.0.0.1:8082/api/aadhar/initiate-verification`, {
+  return fetch(`${constants.API_SERVICE_URL}/api/aadhar/initiate-verification`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -17,7 +19,7 @@ export const initiateAadharVerification = (customerId, aadharNumber) => {
 
 
 export const verifyOTP = (customerId, aadharNumber, OTP) => {
-  return fetch(`http://127.0.0.1:8082/api//aadhar/verify-otp`, {
+  return fetch(`${constants.API_SERVICE_URL}/api/aadhar/verify-otp`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -35,7 +37,7 @@ export const verifyOTP = (customerId, aadharNumber, OTP) => {
 
 
 export const getCustomer = (customerId) => {
-  return fetch(`http://127.0.0.1:8082/api/bob/customer-details`, {
+  return fetch(`${constants.API_SERVICE_URL}/api/bob/customer-details`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
