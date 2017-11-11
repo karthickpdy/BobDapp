@@ -75,8 +75,9 @@ class App extends Component {
 
   createKycCustomer = async (customerId, aadharNumber) => {
     try {
-      return await addCustomer(customerId, aadharNumber, this.state.web3);
+      return await addCustomer(customerId, String(aadharNumber), this.state.web3);
     } catch (error) {
+      console.log(error)
       return error;
     }
   }
