@@ -143,6 +143,7 @@ class App extends Component {
   approveExternalRequest = async (customerId) => {        
     const web3Response = await approveExternalRequest(customerId, this.state.web3);    
     this.updateExternalRequestStatus()
+    this.dispatch({type: 'RELOAD'})
   }
 
   updateExternalRequestStatus = async () => {    

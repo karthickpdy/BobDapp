@@ -12,6 +12,8 @@ export const AppReducer = (state = {customers: [], error: ''}, action) => {
       return {...state,external_requests: action.results}
     case 'RELOAD_LOGS':
       return {...state,logs:action.logs}
+    case 'RELOAD':
+      return {...state, reload: true}
     case 'ERROR':
       return {...state, error: action.error}
     default:

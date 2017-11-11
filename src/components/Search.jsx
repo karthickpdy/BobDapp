@@ -9,7 +9,7 @@ class Search extends Component {
     super(props);
     this.state = {
       search: {
-        customerId: '435723112'
+        customerId: ''
       }
     }
   }

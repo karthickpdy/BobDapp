@@ -9,7 +9,7 @@ class ExternalRequest extends Component {
     super(props);
     this.state = {
       search: {
-        aadharNumber: '1'
+        aadharNumber: ''
       }
     }
   }
