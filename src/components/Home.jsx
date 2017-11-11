@@ -18,7 +18,7 @@ class Home extends Component {
     return (
               <BS.Row>
                 <BS.Col xs={12}>
-                  <BootstrapTable data={this.props.customers} striped={true} hover={true} condensed={true} >
+                  <BootstrapTable data={this.props.customers} tableHeaderClass='bs-like-primary-color' striped={true} hover={true} condensed={true} >
                     <TableHeaderColumn dataField="customerId" isKey={true} dataSort={true}>Customer Id</TableHeaderColumn>
                     <TableHeaderColumn dataField="status" dataSort={true}>Aadhar Status</TableHeaderColumn>
                     <TableHeaderColumn dataField="button" dataFormat={this.buttonFormatter.bind(this)}>Actions</TableHeaderColumn>

@@ -37,3 +37,13 @@ body {
 .flex-fill {
   display: flex;
   flex: 1; }
+
+.remove-border-radius {
+  border-radius: 0;
+}
+
+.bs-like-primary-color {
+  color: #fff;
+  background-color: #337ab7;
+  border-color: #337ab7;
+}

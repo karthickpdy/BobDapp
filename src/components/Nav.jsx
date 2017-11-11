@@ -4,7 +4,7 @@ import * as BS from 'react-bootstrap';
 export class Nav extends Component {
 
   render() {
-    return (<BS.Navbar bsStyle="inverse">
+    return (<BS.Navbar className='remove-border-radius'>
       <BS.Navbar.Header>
         <BS.Navbar.Brand>
           <a href="/">e-KYC</a>
