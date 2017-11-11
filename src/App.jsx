@@ -178,7 +178,7 @@ class App extends Component {
         <Router history={history}>
           <div className="site-container container-fluid flex-container">
             <Route path="/about" render={(props) => (<Components.CustomerDetails sendOTP={this.sendOTP.bind(this)} verifyAadhar={this.verifyAadhar.bind(this)} logs={this.state.logs}/>)} />
-            <Route exact path="/" render={(props) => (<Components.Home fetchCustomer={this.handleSearch.bind(this)} customers={this.state.customers} approveExternalRequest={this.approveExternalRequest.bind(this)} />)} />
+            <Route exact path="/" render={(props) => (<Components.Home fetchCustomer={this.handleSearch.bind(this)} customers={this.state.customers} approveExternalRequest={this.approveExternalRequest.bind(this)} reload={this.state.reload}/>)} />
             <Route path="/external" render={(props) => (<Components.ExternalRequest handleSubmit={this.sendExternalRequest.bind(this)} externalRequests={this.state.external_requests} />)} />
             <Route path="/search" render={(props) => (<Components.Search handleSubmit={this.handleSearch.bind(this)} />)} />
           </div>
