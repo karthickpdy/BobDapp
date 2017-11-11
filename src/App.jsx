@@ -73,9 +73,9 @@ class App extends Component {
   }
 
 
-  createKycCustomer = async (customerId) => {
+  createKycCustomer = async (customerId, aadharNumber) => {
     try {
-      return await addCustomer(customerId, this.state.web3);
+      return await addCustomer(customerId, aadharNumber, this.state.web3);
     } catch (error) {
       return error;
     }
@@ -87,10 +87,11 @@ class App extends Component {
       console.log('error', response);
       return this.dispatch({ type: 'ERROR', error: 'Customer not found' });
     }
+    console.log('response', response);
     const kycCustomers = this.state.customers.filter(customer => customer.customerId === parseInt(customerId));
     let kycCustomer = kycCustomers[0];
     if (!kycCustomer) {
-      const web3response = await this.createKycCustomer(parseInt(customerId));
+      const web3response = await this.createKycCustomer(parseInt(customerId), response.response.Aadhar_card);
       if (web3response.tx) {
         const status = await getStatus(customerId, this.state.web3)
         kycCustomer = { customerId: parseInt(customerId), status }
