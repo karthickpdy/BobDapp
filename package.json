@@ -1,6 +1,7 @@
 {
   "name": "react-box",
   "version": "0.1.0",
+  "engines" : { "node": "7.3.0", "npm": "3.10.10" },
   "private": true,
   "devDependencies": {
     "autoprefixer": "6.5.1",
