@@ -13,7 +13,9 @@ export const AppReducer = (state = {customers: [], error: ''}, action) => {
     case 'RELOAD_LOGS':
       return {...state,logs:action.logs}
     case 'RELOAD':
-      return {...state, reload: true}
+      const customerToBeReloaded = state.customers.filter(customer => customer.customerId === action.customerId)[0]
+      customerToBeReloaded.pending_status = false;
+      return {customers: state.customers.filter(customer => customer.customerId !== action.customerId).concat([customerToBeReloaded])}
     case 'ERROR':
       return {...state, error: action.error}
     default:
